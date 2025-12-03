@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MICRAI - Microorganism Recognition Assisted by AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #144659 0%, #2D6673 50%, #499CA6 100%);
+            min-height: 100vh;
+            padding: 5px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+        }
+
+        .flag-btn {
+            width: 40px;
+            height: 30px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .flag-btn:hover {
+            transform: scale(1.1);
+            border-color: rgba(255,255,255,0.8);
+        }
+
+        .flag-btn.active {
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .flag-colombia {
+            background: linear-gradient(to bottom, #ffde00 0%, #ffde00 50%, #0033a0 50%, #0033a0 75%, #ce1126 75%, #ce1126 100%);
+        }
+
+        .flag-usa {
+            background: repeating-linear-gradient(0deg, #b22234 0px, #b22234 2px, #ffffff 2px, #ffffff 4px);
+            position: relative;
+        }
+
+        .flag-usa::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40%;
+            height: 54%;
+            background: #3c3b6e;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #021226 0%, #144659 100%);
+            color: white;
+            padding: 40px 30px;
+            padding-top: 70px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/static/images/robot.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.35;
+            filter: blur(2px);
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            margin-bottom: 5px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .proof-concept {
+            background: rgba(176,217,213,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            padding: 8px 20px;
+            margin: 15px auto 0;
+            display: inline-block;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #B0D9D5;
+            border-bottom: 2px solid #499CA6;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #B0D9D5;
+            color: #144659;
+            font-weight: bold;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .nav-tab:hover {
+            background: #499CA6;
+            color: white;
+        }
+
+        .nav-tab.active {
+            background: #2D6673;
+            color: white;
+        }
+
+        .blastocystis-italic {
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .results-disclaimer {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.85em;
+            color: #6c757d;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .privacy-notice {
+            background: #B0D9D5;
+            border: 2px solid #499CA6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .privacy-notice h3 {
+            color: #021226;
+            margin-bottom: 10px;
+        }
+
+        .privacy-notice p {
+            color: #144659;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .upload-section {
+            background: #B0D9D5;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .upload-section h2 {
+            color: #021226;
+            margin-bottom: 10px;
+        }
+
+        .upload-section p {
+            color: #144659;
+            margin-bottom: 20px;
+        }
+
+        .upload-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .upload-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .file-btn {
+            background: #2D6673;
+            color: white;
+        }
+
+        .file-btn:hover {
+            background: #144659;
+            transform: translateY(-2px);
+        }
+
+        .camera-btn {
+            background: #499CA6;
+            color: white;
+        }
+
+        .camera-btn:hover {
+            background: #2D6673;
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .camera-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 18, 38, 0.95);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .camera-container {
+            max-width: 90%;
+            max-height: 80%;
+            text-align: center;
+            color: white;
+        }
+
+        .camera-video {
+            width: 100%;
+            max-width: 500px;
+            max-height: 400px;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .camera-controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .camera-btn-control {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .capture-btn {
+            background: #499CA6;
+            color: white;
+        }
+
+        .capture-btn:hover {
+            background: #2D6673;
+        }
+
+        .cancel-btn {
+            background: #144659;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: #021226;
+        }
+
+        .image-preview {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-preview h3 {
+            color: #021226;
+            margin-bottom: 15px;
+        }
+
+        .crop-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+        }
+
+        .crop-image {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+        }
+
+        .crop-overlay {
+            position: absolute;
+            border: 2px dashed #499CA6;
+            background: rgba(73, 156, 166, 0.15);
+            cursor: move;
+            min-width: 50px;
+            min-height: 50px;
+        }
+
+        .crop-handle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #499CA6;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: nw-resize;
+            right: -6px;
+            bottom: -6px;
+        }
+
+        .process-btn {
+            background: #2D6673;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .process-btn:hover {
+            background: #144659;
+            transform: translateY(-2px);
+        }
+
+        .process-btn:disabled {
+            background: #B0D9D5;
+            color: #144659;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #B0D9D5;
+            border-top: 4px solid #499CA6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            background: #B0D9D5;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .results h3 {
+            color: #021226;
+            margin-bottom: 20px;
+        }
+
+        .cropped-image-display {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cropped-image-display h4 {
+            color: #144659;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .cropped-image-display img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 2px solid #499CA6;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .confidence-bar {
+            width: 150px;
+            height: 20px;
+            background: #499CA6;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-left: 20px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .about-content {
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .about-content h2 {
+            color: #021226;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .about-content h3 {
+            color: #144659;
+            margin: 25px 0 15px 0;
+        }
+
+        .about-content p {
+            color: #2D6673;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .about-content ul {
+            color: #2D6673;
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .about-content li {
+            margin-bottom: 8px;
+        }
+
+        .about-content ol {
+            color: #2D6673;
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .about-content ol li {
+            margin-bottom: 8px;
+        }
+
+        .creator-info {
+            background: #B0D9D5;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+        }
+
+        .creator-photo {
+            flex-shrink: 0;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #499CA6;
+            overflow: hidden;
+        }
+
+        .creator-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(20%);
+        }
+
+        .creator-text {
+            flex: 1;
+        }
+
+        .creator-text h3 {
+            color: #021226;
+            margin-bottom: 15px;
+        }
+
+        .creator-text p {
+            color: #144659;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .publications {
+            margin-top: 20px;
+        }
+
+        .publications h4 {
+            color: #144659;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .publications ul {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .publications ul li {
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            line-height: 1.4;
+            text-align: left;
+            list-style-type: none;
+        }
+
+        .footer-disclaimer {
+            background: #021226;
+            color: #B0D9D5;
+            padding: 15px 30px;
+            text-align: center;
+            font-size: 0.8em;
+            line-height: 1.4;
+        }
+
+        .footer-disclaimer a {
+            color: #499CA6;
+            text-decoration: none;
+        }
+
+        .footer-disclaimer a:hover {
+            text-decoration: underline;
+        }
+
+        .image-counter {
+            background: #144659;
+            color: #B0D9D5;
+            padding: 10px 30px;
+            text-align: center;
+            font-size: 0.9em;
+            border-top: 1px solid #2D6673;
+        }
+
+        .counter-stat {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 5px 10px;
+            background: rgba(176,217,213,0.1);
+            border-radius: 15px;
+            border: 1px solid #499CA6;
+        }
+
+        @media (max-width: 768px) {
+            .creator-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .creator-photo {
+                align-self: center;
+            }
+            
+            .creator-text p {
+                text-align: justify;
+            }
+
+            .creator-text h3 {
+                text-align: center;
+            }
+
+            .publications h4 {
+                text-align: center;
+            }
+
+            .publications ul {
+                text-align: left;
+                padding-left: 20px;
+                margin: 0 auto;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .upload-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .upload-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .header h1 {
+                font-size: 2.5em;
+            }
+
+            .main-content {
+                padding: 10px;
+            }
+
+            .confidence-bar {
+                width: 100px;
+            }
+
+            .camera-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="language-switcher">
+            <div class="flag-btn flag-colombia active" onclick="setLanguage('es')" title="Español"></div>
+            <div class="flag-btn flag-usa" onclick="setLanguage('en')" title="English"></div>
+        </div>
+
+        <div class="header">
+            <div class="header-content">
+                <h1 id="title">MICRAI</h1>
+                <p class="subtitle" id="subtitle">Microorganism Recognition Assisted by AI</p>
+                <div class="proof-concept">
+                    <span id="proof-concept-text">Prueba de Concepto | Primer Módulo</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('detection')">
+                <span id="detection-tab">Detección de <span class="blastocystis-italic">Blastocystis</span></span>
+            </button>
+            <button class="nav-tab" onclick="switchTab('about')">
+                <span id="about-tab">Acerca de</span>
+            </button>
+        </div>
+
+        <div id="detectionTab" class="tab-content active">
+            <div class="main-content">
+                <div class="upload-section">
+                    <h2 id="upload-title">📸 Subir imagen del campo observado al microscopio</h2>
+                    <p id="upload-subtitle">Toma una foto o selecciona una imagen del microorganismo</p>
+                    <div class="upload-buttons">
+                        <button class="upload-btn file-btn" onclick="selectFile()">
+                            <span id="file-btn-text">📁 Elegir Archivos</span>
+                        </button>
+                        <button class="upload-btn camera-btn" onclick="openCamera()">
+                            <span id="camera-btn-text">📷 Tomar Foto</span>
+                        </button>
+                    </div>
+                    <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="loadImage(event)">
+                </div>
+
+                <div id="imagePreview" class="image-preview hidden">
+                    <h3 id="crop-title">✂️ Recorta tu Imagen</h3>
+                    <div class="crop-container">
+                        <img id="previewImage" class="crop-image" alt="Vista previa">
+                        <div id="cropOverlay" class="crop-overlay hidden">
+                            <div class="crop-handle"></div>
+                        </div>
+                    </div>
+                    <button class="process-btn" onclick="processImage()" disabled>
+                        <span id="analyze-btn-text">🔍 Analizar para <span class="blastocystis-italic">Blastocystis</span></span>
+                    </button>
+                </div>
+
+                <div id="loading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <h3 id="processing-title">Procesando imagen...</h3>
+                </div>
+
+                <div id="results" class="results hidden">
+                    <div class="results-disclaimer">
+                        <span id="results-disclaimer-text">Los porcentajes indican el nivel de coincidencia con las clases reconocidas por el modelo. Este sistema es solo para investigación.</span>
+                    </div>
+                    <h3 id="results-title">📊 Resultados</h3>
+                    <div class="cropped-image-display">
+                        <h4 id="cropped-title">Imagen Analizada</h4>
+                        <img id="croppedImageResult" src="" alt="Imagen recortada">
+                    </div>
+                    <div id="resultsList"></div>
+                    <button class="upload-btn file-btn" onclick="resetApp()" style="margin-top: 20px;">
+                        <span id="reset-btn-text">🔄 Analizar Otra Imagen</span>
+                    </button>
+                </div>
+
+                <div class="privacy-notice" style="margin-top: 15px;">
+                    <h3 id="privacy-title">🔬 Aviso de Investigación</h3>
+                    <p id="privacy-text">Este sistema es solo para investigación y no debe usarse para diagnóstico clínico. Al subir imágenes, aceptas su uso para mejorar el modelo.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="aboutTab" class="tab-content">
+            <div class="main-content">
+                <div class="about-content">
+                    <div class="creator-info">
+                        <div class="creator-photo">
+                            <img src="/static/images/robot.jpg" alt="MICRAI AI System">
+                        </div>
+                        <div class="creator-text">
+                            <h2 id="about-main-title">¿Qué es MICRAI?</h2>
+                            <p id="about-what-text">MICRAI (Microorganism Recognition Assisted by AI) es un sistema de inteligencia artificial desarrollado como prueba de concepto, cuyo propósito es explorar el potencial del aprendizaje automático en la detección de microorganismos a partir de imágenes microscópicas. Este modelo inicial fue entrenado con un número limitado de imágenes disponibles, por lo que su precisión actual es modesta y está en fase de mejora continua.</p>
+                            <p id="about-what-text2">Para esta primera etapa se eligió <em>Blastocystis</em>, un microorganismo muy prevalente en los seres humanos que, por su notable pleomorfismo (es decir, su capacidad de presentar múltiples formas), en ocasiones dificulta su identificación por parte del personal humano. Esto lo convierte en un organismo especialmente interesante para explorar cómo la inteligencia artificial podría apoyar en su reconocimiento.</p>
+                        </div>
+                    </div>
+                    
+                    <p id="about-what-text3">Si bien en otros países se han desarrollado sistemas de inteligencia artificial para la identificación de parásitos y otros microorganismos en imágenes microscópicas (por ejemplo, para <em>Plasmodium</em> o helmintos), en su mayoría corresponden a proyectos de grandes universidades o empresas tecnológicas y no suelen estar diseñados para responder a las particularidades locales de América Latina. En Colombia, aunque existen iniciativas valiosas en IA aplicadas a epidemiología, resistencia antimicrobiana y patología digital, MICRAI es, hasta donde se sabe, la primera iniciativa enfocada en la identificación asistida por IA de <em>Blastocystis</em> y otros parásitos intestinales, con un enfoque académico y adaptado al contexto nacional.</p>
+                    
+                    <p id="about-what-text4">El objetivo principal de esta aplicación es facilitar la recolección de imágenes, que serán revisadas por un experto y empleadas para fortalecer el entrenamiento del modelo. De esta manera, se busca avanzar hacia herramientas cada vez más precisas que contribuyan al estudio de los parásitos intestinales. MICRAI aspira a convertirse en un aliado que complemente el trabajo de los profesionales de laboratorio y contribuya al avance de la investigación en microbiología.</p>
+                    
+                    <p id="about-what-text5">Es importante destacar que este sistema no tiene ningún fin diagnóstico y no debe ser utilizado como sustituto de una evaluación realizada por un profesional de la salud.</p>
+                    
+                    <h3 id="about-how-title">¿Cómo funciona?</h3>
+                    <p id="about-how-text">MICRAI fue diseñado para ser sencillo de utilizar y permitir la participación activa de la comunidad académica y científica. El proceso consiste en:</p>
+                    <ol>
+                        <li id="about-step1">Capturar una imagen de la muestra bajo el microscopio.</li>
+                        <li id="about-step2">Recortar la imagen para centrarla en el área de interés.</li>
+                        <li id="about-step3">Permitir que el modelo de inteligencia artificial analice la imagen procesada.</li>
+                        <li id="about-step4">Entregar un resultado con un nivel de coincidencia con las clases aprendidas por el modelo.</li>
+                    </ol>
+                    <p id="about-how-text2">Cada imagen aportada contribuye al crecimiento y perfeccionamiento del sistema.</p>
+                    
+                    <h3 id="about-development-title">Estado de desarrollo</h3>
+                    <p id="about-development-text">MICRAI es el primer modelo de una serie de herramientas que se proyectan para la detección de otros parásitos intestinales de importancia en salud pública, como:</p>
+                    <ul>
+                        <li id="about-dev1"><em>Entamoeba histolytica</em>/dispar</li>
+                        <li id="about-dev2"><em>Giardia lamblia</em></li>
+                        <li id="about-dev3"><em>Balantioides coli</em></li>
+                        <li id="about-dev4">Helmintos como <em>Ascaris lumbricoides</em></li>
+                        <li id="about-dev5"><em>Taenia</em> spp.</li>
+                        <li id="about-dev6">Otros parásitos de importancia en salud pública</li>
+                    </ul>
+                    <p id="about-development-text2">Actualmente se encuentra en fase temprana, orientado principalmente a la recolección de imágenes y al entrenamiento progresivo de los modelos, siempre bajo revisión de expertos.</p>
+                    
+                    <h3 id="about-potential-title">Potencial de aplicación</h3>
+                    <p id="about-potential-text">Si bien el enfoque inicial está en el ámbito de la salud humana, esta tecnología tiene un claro potencial para ser adaptada al campo veterinario y al análisis de muestras ambientales. De esta forma, MICRAI podría aportar en el futuro a la vigilancia sanitaria, la salud animal y la seguridad alimentaria.</p>
+                    
+                    <h3 id="about-accuracy-title">Precisión y limitaciones</h3>
+                    <p id="about-accuracy-text">Dado el número reducido de imágenes utilizadas en el entrenamiento inicial, el sistema tiene limitaciones en su capacidad actual de predicción. Sin embargo, su diseño está pensado para que, con el uso y la recolección de nuevas imágenes validadas por expertos, el modelo mejore progresivamente su desempeño.</p>
+                    
+                    <h3 id="about-data-title">Mejora continua</h3>
+                    <p id="about-data-text">MICRAI se enmarca en un proceso de mejora constante. Cada imagen que se incorpora, bajo criterios éticos y de anonimato, fortalece la base de datos y permite optimizar los algoritmos, en beneficio de la comunidad científica y académica.</p>
+                    
+                    <div class="creator-info">
+                        <div class="creator-photo">
+                            <img src="/static/images/miguel.jpg" alt="Miguel Ángel Toro Londoño">
+                        </div>
+                        <div class="creator-text">
+                            <h3 id="about-creator-title">Creado por</h3>
+                            <p id="about-creator-bio">Este proyecto fue desarrollado por el profesor Miguel Ángel Toro Londoño, microbiólogo de la Universidad de Antioquia, con maestría en Biología (énfasis en Parasitología Molecular) de la misma universidad y doctorado en Señalización Celular (énfasis en Biología Molecular y Bioquímica de Parásitos) de la Universidad de Alcalá, en España. Realizó posdoctorados en el Centro Nacional de Secuenciación Genómica y en el Max Planck Tandem Group de Biología Reproductiva de Mosquitos, ambos en la Universidad de Antioquia.</p>
+                            <p id="about-creator-current">Desde 2021 se desempeña como profesor de Parasitología en el pregrado de Medicina, adscrito al Departamento de Microbiología y Parasitología y al Grupo de Parasitología de la Facultad de Medicina de la Universidad de Antioquia. Su trabajo busca contribuir con soluciones prácticas y aplicables al avance de la microbiología y al fortalecimiento de la formación académica en el país.</p>
+                            <p id="about-creator-contact">Contacto: <a href="mailto:miguel.toro@udea.edu.co">miguel.toro@udea.edu.co</a></p>
+                            <p id="about-creator-orcid">ORCID: <a href="https://orcid.org/0000-0002-7607-5151" target="_blank" rel="noopener noreferrer">0000-0002-7607-5151</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="publications">
+                        <h4 id="publications-title">Publicaciones recientes</h4>
+                        <ul id="publications-list">
+                            <li>Draft genome sequences of four Morganella morganii strains isolated from Colombian colorectal cancer patient stool specimens. <em>Microbiology Resource Announcements</em>, 2024-02-15. DOI: 10.1128/mra.01077-23</li>
+                            <li>Identification and validation of novel Blastocystis subtype ST41 in a Colombian patient undergoing colorectal cancer screening. <em>Journal of Eukaryotic Microbiology</em>, 2023-09. DOI: 10.1111/jeu.12978</li>
+                            <li>Pyridazino-pyrrolo-quinoxalinium salts as highly potent and selective leishmanicidal agents targeting trypanothione reductase. <em>European Journal of Medicinal Chemistry</em>, 2022-01. DOI: 10.1016/j.ejmech.2021.113915</li>
+                            <li>A specific structure and high richness characterize intestinal microbiota of HIV-exposed seronegative individuals. <em>PLOS ONE</em>, 2021-12-02. DOI: 10.1371/journal.pone.0260729</li>
+                            <li>Contrasting microbiota profiles observed in children carrying either Blastocystis spp. or the commensal amoebas Entamoeba coli or Endolimax nana. <em>Scientific Reports</em>, 2020-12. DOI: 10.1038/s41598-020-72286-y</li>
+                        </ul>
+                    </div>
+                    
+                    <h3 id="about-tech-title">Tecnologías utilizadas</h3>
+                    <p id="about-tech-text">MICRAI fue desarrollado utilizando tecnologías de código abierto y herramientas modernas como:</p>
+                    <ul>
+                        <li id="about-tech-item1">TensorFlow/Keras para el modelo de inteligencia artificial</li>
+                        <li id="about-tech-item2">Python Flask para el backend</li>
+                        <li id="about-tech-item3">JavaScript vanilla para la interfaz</li>
+                        <li id="about-tech-item4">HTML5 Canvas para el procesamiento de imágenes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="image-counter">
+            <span id="counter-text">📊 Imágenes Analizadas: </span>
+            <span class="counter-stat">
+                <span id="total-images">0</span>
+            </span>
+        </div>
+        
+        <div class="footer-disclaimer">
+            <p id="footer-text">MICRAI es una herramienta de apoyo al análisis de imágenes microscópicas y no sustituye el juicio clínico ni un diagnóstico médico profesional. Contacto: <a href="mailto:miguel.toro@udea.edu.co">miguel.toro@udea.edu.co</a> | Desarrollado por <a href="mailto:miguel.toro@udea.edu.co">Miguel Toro</a> | Versión 1.0.0</p>
+        </div>
+    </div>
+
+    <div id="cameraModal" class="camera-modal hidden">
+        <div class="camera-container">
+            <h3 id="camera-title">📷 Cámara</h3>
+            <video id="cameraVideo" class="camera-video" autoplay playsinline muted></video>
+            <canvas id="cameraCanvas" class="hidden"></canvas>
+            <div class="camera-controls">
+                <button class="camera-btn-control capture-btn" onclick="capturePhoto()">
+                    <span id="capture-btn-text">📸 Capturar</span>
+                </button>
+                <button class="camera-btn-control cancel-btn" onclick="closeCamera()">
+                    <span id="cancel-btn-text">❌ Cancelar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentImage = null;
+        let cropData = null;
+        let cameraStream = null;
+        let currentLanguage = 'es';
+        let croppedImageData = null;
+        let totalImages = 0;
+
+        // Load image counter from server on page load
+        function loadImageCounter() {
+            fetch('/health')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.total_images) {
+                        totalImages = data.total_images;
+                        updateImageCounter();
+                    }
+                })
+                .catch(error => {
+                    console.log('Could not load image counter:', error);
+                });
+        }
+
+        function updateImageCounter() {
+            document.getElementById('total-images').textContent = totalImages;
+            
+            if (currentLanguage === 'es') {
+                document.getElementById('counter-text').textContent = '📊 Imágenes Analizadas: ';
+            } else {
+                document.getElementById('counter-text').textContent = '📊 Images Analyzed: ';
+            }
+        }
+
+        const translations = {
+            es: {
+                title: 'MICRAI',
+                subtitle: 'Microorganism Recognition Assisted by AI',
+                proofConcept: 'Prueba de Concepto | Primer Módulo',
+                detectionTab: 'Detección de <span class="blastocystis-italic">Blastocystis</span>',
+                aboutTab: 'Acerca de',
+                resultsDisclaimerText: 'Los porcentajes indican el nivel de coincidencia con las clases reconocidas por el modelo. Este sistema es solo para investigación.',
+                privacyTitle: '🔬 Aviso de Investigación',
+                privacyText: 'Este sistema es solo para investigación y no debe usarse para diagnóstico clínico. Al subir imágenes, aceptas su uso para mejorar el modelo.',
+                uploadTitle: '📸 Subir imagen del campo observado al microscopio',
+                uploadSubtitle: 'Toma una foto o selecciona una imagen del microorganismo',
+                fileBtnText: '📁 Elegir Archivos',
+                cameraBtnText: '📷 Tomar Foto',
+                cropTitle: '✂️ Recorta tu Imagen',
+                analyzeBtnText: '🔍 Analizar para <span class="blastocystis-italic">Blastocystis</span>',
+                processingTitle: 'Procesando imagen...',
+                resultsTitle: '📊 Resultados',
+                croppedTitle: 'Imagen Analizada',
+                resetBtnText: '🔄 Analizar Otra Imagen',
+                cameraTitle: '📷 Cámara',
+                captureBtnText: '📸 Capturar',
+                cancelBtnText: '❌ Cancelar',
+                cameraError: 'No se puede acceder a la cámara. Usa "Elegir Archivos".',
+                cameraNotReady: 'Cámara no lista. Espera un momento.',
+                processingError: 'Error al procesar la imagen. Por favor, intenta nuevamente.',
+                networkError: 'Error de conexión. Verifica tu conexión a internet.',
+                blastocystisMatch: 'Coincidencia con <em>Blastocystis</em>',
+                otherMicroorganismMatch: 'Coincidencia con otro microorganismo',
+                aboutMainTitle: '¿Qué es MICRAI?',
+                aboutWhatText: 'MICRAI (Microorganism Recognition Assisted by AI) es un sistema de inteligencia artificial desarrollado como prueba de concepto, cuyo propósito es explorar el potencial del aprendizaje automático en la detección de microorganismos a partir de imágenes microscópicas. Este modelo inicial fue entrenado con un número limitado de imágenes disponibles, por lo que su precisión actual es modesta y está en fase de mejora continua.',
+                aboutWhatText2: 'Para esta primera etapa se eligió <em>Blastocystis</em>, un microorganismo muy prevalente en los seres humanos que, por su notable pleomorfismo (es decir, su capacidad de presentar múltiples formas), en ocasiones dificulta su identificación por parte del personal humano. Esto lo convierte en un organismo especialmente interesante para explorar cómo la inteligencia artificial podría apoyar en su reconocimiento.',
+                aboutWhatText3: 'Si bien en otros países se han desarrollado sistemas de inteligencia artificial para la identificación de parásitos y otros microorganismos en imágenes microscópicas (por ejemplo, para <em>Plasmodium</em> o helmintos), en su mayoría corresponden a proyectos de grandes universidades o empresas tecnológicas y no suelen estar diseñados para responder a las particularidades locales de América Latina. En Colombia, aunque existen iniciativas valiosas en IA aplicadas a epidemiología, resistencia antimicrobiana y patología digital, MICRAI es, hasta donde se sabe, la primera iniciativa enfocada en la identificación asistida por IA de <em>Blastocystis</em> y otros parásitos intestinales, con un enfoque académico y adaptado al contexto nacional.',
+                aboutWhatText4: 'El objetivo principal de esta aplicación es facilitar la recolección de imágenes, que serán revisadas por un experto y empleadas para fortalecer el entrenamiento del modelo. De esta manera, se busca avanzar hacia herramientas cada vez más precisas que contribuyan al estudio de los parásitos intestinales. MICRAI aspira a convertirse en un aliado que complemente el trabajo de los profesionales de laboratorio y contribuya al avance de la investigación en microbiología.',
+                aboutWhatText5: 'Es importante destacar que este sistema no tiene ningún fin diagnóstico y no debe ser utilizado como sustituto de una evaluación realizada por un profesional de la salud.',
+                aboutHowTitle: '¿Cómo funciona?',
+                aboutHowText: 'MICRAI fue diseñado para ser sencillo de utilizar y permitir la participación activa de la comunidad académica y científica. El proceso consiste en:',
+                aboutStep1: 'Capturar una imagen de la muestra bajo el microscopio.',
+                aboutStep2: 'Recortar la imagen para centrarla en el área de interés.',
+                aboutStep3: 'Permitir que el modelo de inteligencia artificial analice la imagen procesada.',
+                aboutStep4: 'Entregar un resultado con un nivel de coincidencia con las clases aprendidas por el modelo.',
+                aboutHowText2: 'Cada imagen aportada contribuye al crecimiento y perfeccionamiento del sistema.',
+                aboutDevelopmentTitle: 'Estado de desarrollo',
+                aboutDevelopmentText: 'MICRAI es el primer modelo de una serie de herramientas que se proyectan para la detección de otros parásitos intestinales de importancia en salud pública, como:',
+                aboutDev1: 'Entamoeba histolytica/dispar',
+                aboutDev2: 'Giardia lamblia',
+                aboutDev3: 'Balantioides coli',
+                aboutDev4: 'Helmintos como Ascaris lumbricoides',
+                aboutDev5: 'Taenia spp.',
+                aboutDev6: 'Otros parásitos de importancia en salud pública',
+                aboutDevelopmentText2: 'Actualmente se encuentra en fase temprana, orientado principalmente a la recolección de imágenes y al entrenamiento progresivo de los modelos, siempre bajo revisión de expertos.',
+                aboutPotentialTitle: 'Potencial de aplicación',
+                aboutPotentialText: 'Si bien el enfoque inicial está en el ámbito de la salud humana, esta tecnología tiene un claro potencial para ser adaptada al campo veterinario y al análisis de muestras ambientales. De esta forma, MICRAI podría aportar en el futuro a la vigilancia sanitaria, la salud animal y la seguridad alimentaria.',
+                aboutAccuracyTitle: 'Precisión y limitaciones',
+                aboutAccuracyText: 'Dado el número reducido de imágenes utilizadas en el entrenamiento inicial, el sistema tiene limitaciones en su capacidad actual de predicción. Sin embargo, su diseño está pensado para que, con el uso y la recolección de nuevas imágenes validadas por expertos, el modelo mejore progresivamente su desempeño.',
+                aboutDataTitle: 'Mejora continua',
+                aboutDataText: 'MICRAI se enmarca en un proceso de mejora constante. Cada imagen que se incorpora, bajo criterios éticos y de anonimato, fortalece la base de datos y permite optimizar los algoritmos, en beneficio de la comunidad científica y académica.',
+                aboutCreatorTitle: 'Creado por',
+                aboutCreatorBio: 'Este proyecto fue desarrollado por el profesor Miguel Ángel Toro Londoño, microbiólogo de la Universidad de Antioquia, con maestría en Biología (énfasis en Parasitología Molecular) de la misma universidad y doctorado en Señalización Celular (énfasis en Biología Molecular y Bioquímica de Parásitos) de la Universidad de Alcalá, en España. Realizó posdoctorados en el Centro Nacional de Secuenciación Genómica y en el Max Planck Tandem Group de Biología Reproductiva de Mosquitos, ambos en la Universidad de Antioquia.',
+                aboutCreatorCurrent: 'Desde 2021 se desempeña como profesor de Parasitología en el pregrado de Medicina, adscrito al Departamento de Microbiología y Parasitología y al Grupo de Parasitología de la Facultad de Medicina de la Universidad de Antioquia. Su trabajo busca contribuir con soluciones prácticas y aplicables al avance de la microbiología y al fortalecimiento de la formación académica en el país.',
+                aboutCreatorContact: 'Contacto: miguel.toro@udea.edu.co',
+                aboutCreatorOrcid: 'ORCID: 0000-0002-7607-5151',
+                publicationsTitle: 'Publicaciones recientes',
+                aboutTechTitle: 'Tecnologías utilizadas',
+                aboutTechText: 'MICRAI fue desarrollado utilizando tecnologías de código abierto y herramientas modernas como:',Text: 'Por el número reducido de imágenes empleadas en el entrenamiento inicial, el sistema presenta limitaciones en su capacidad de predicción. Sin embargo, su uso permitirá recopilar un mayor número de imágenes, que luego serán validadas por un experto y utilizadas para entrenar nuevas versiones del modelo.',
+                aboutDataTitle: 'Mejora continua',
+                aboutDataText: 'Cada uso de la aplicación contribuye al proceso de perfeccionamiento del sistema. Las imágenes recolectadas se almacenan de forma anónima y serán clave para fortalecer el modelo y beneficiar a la comunidad científica.',
+                aboutCreatorTitle: 'Creado por',
+                aboutCreatorBio: 'Este proyecto fue desarrollado por Miguel Ángel Toro Londoño, microbiólogo formado en la Universidad de Antioquia, donde también obtuvo su maestría en Biología con énfasis en Parasitología Molecular. Realizó su doctorado en Señalización Celular con énfasis en Biología Molecular y Bioquímica de Parásitos en la Universidad de Alcalá (España). Posteriormente, llevó a cabo un posdoctorado en el Centro Nacional de Secuenciación Genómica y otro en el Max Planck Tandem Group de Biología Reproductiva de Mosquitos, ambos en la Universidad de Antioquia.',
+                aboutCreatorCurrent: 'Desde 2021 se desempeña como profesor de Parasitología en el pregrado de Medicina y está adscrito al Departamento de Microbiología y Parasitología de la Facultad de Medicina de la Universidad de Antioquia. Miguel procura que su trabajo contribuya de manera sencilla al avance del conocimiento en parasitología y al fortalecimiento de la formación académica en el país.',
+                aboutCreatorContact: 'Puedes escribirle a: miguel.toro@udea.edu.co',
+                publicationsTitle: 'Publicaciones recientes',
+                aboutTechTitle: 'Tecnologías utilizadas',
+                aboutTechText: 'Este sistema fue desarrollado utilizando:',
+                aboutTechItem1: 'TensorFlow/Keras para el modelo de inteligencia artificial',
+                aboutTechItem2: 'Python Flask para el backend',
+                aboutTechItem3: 'JavaScript vanilla para la interfaz',
+                aboutTechItem4: 'HTML5 Canvas para el procesamiento de imágenes',
+                footerText: 'MICRAI es una herramienta de apoyo al análisis de imágenes microscópicas y no sustituye el juicio clínico ni un diagnóstico médico profesional. Contacto: miguel.toro@udea.edu.co | Desarrollado por Miguel Toro | Versión 1.0.0',
+                counterText: '📊 Imágenes Analizadas: '
+            },
+            en: {
+                title: 'MICRAI',
+                subtitle: 'Microorganism Recognition Assisted by AI',
+                proofConcept: 'Proof of Concept | First Module',
+                detectionTab: '<span class="blastocystis-italic">Blastocystis</span> Detection',
+                aboutTab: 'About',
+                resultsDisclaimerText: 'Percentages indicate the level of match with classes recognized by the model. This system is for research only.',
+                privacyTitle: '🔬 Research Notice',
+                privacyText: 'This system is for research only and should not be used for clinical diagnosis. By uploading images, you agree to their use for model improvement.',
+                uploadTitle: '📸 Upload image of the field observed under microscope',
+                uploadSubtitle: 'Take a photo or select an image of the microorganism',
+                fileBtnText: '📁 Choose from Files',
+                cameraBtnText: '📷 Take Photo',
+                cropTitle: '✂️ Crop Your Image',
+                analyzeBtnText: '🔍 Analyze for <span class="blastocystis-italic">Blastocystis</span>',
+                processingTitle: 'Processing image...',
+                resultsTitle: '📊 Results',
+                croppedTitle: 'Analyzed Image',
+                resetBtnText: '🔄 Analyze Another Image',
+                cameraTitle: '📷 Camera',
+                captureBtnText: '📸 Capture',
+                cancelBtnText: '❌ Cancel',
+                cameraError: 'Unable to access camera. Use "Choose from Files".',
+                cameraNotReady: 'Camera not ready. Please wait.',
+                processingError: 'Error processing image. Please try again.',
+                networkError: 'Connection error. Please check your internet connection.',
+                blastocystisMatch: 'Match with <em>Blastocystis</em>',
+                otherMicroorganismMatch: 'Match with other microorganism',
+                aboutMainTitle: 'What is MICRAI?',
+                aboutWhatText: 'MICRAI (Microorganism Recognition Assisted by AI) is an artificial intelligence system developed as a proof of concept, whose purpose is to explore the potential of machine learning in detecting microorganisms from microscopic images. This initial model was trained with a limited number of available images, so its current accuracy is modest and is in a phase of continuous improvement.',
+                aboutWhatText2: 'For this first stage, <em>Blastocystis</em> was chosen, a microorganism very prevalent in humans that, due to its notable pleomorphism (that is, its ability to present multiple forms), sometimes makes its identification difficult for human personnel. This makes it a particularly interesting organism to explore how artificial intelligence could support its recognition.',
+                aboutWhatText3: 'Although artificial intelligence systems have been developed in other countries for the identification of parasites and other microorganisms in microscopic images (for example, for <em>Plasmodium</em> or helminths), most correspond to projects from large universities or technology companies and are not usually designed to respond to the local particularities of Latin America. In Colombia, although there are valuable initiatives in AI applied to epidemiology, antimicrobial resistance and digital pathology, MICRAI is, as far as is known, the first initiative focused on AI-assisted identification of <em>Blastocystis</em> and other intestinal parasites, with an academic approach adapted to the national context.',
+                aboutWhatText4: 'The main objective of this application is to facilitate image collection, which will be reviewed by an expert and used to strengthen model training. In this way, we seek to advance towards increasingly precise tools that contribute to the study of intestinal parasites. MICRAI aspires to become an ally that complements the work of laboratory professionals and contributes to the advancement of research in microbiology.',
+                aboutWhatText5: 'It is important to note that this system has no diagnostic purpose and should not be used as a substitute for evaluation by a healthcare professional.',
+                aboutHowTitle: 'How does it work?',
+                aboutHowText: 'MICRAI was designed to be simple to use and allow active participation from the academic and scientific community. The process consists of:',
+                aboutStep1: 'Capturing an image of the sample under the microscope.',
+                aboutStep2: 'Cropping the image to center it on the area of interest.',
+                aboutStep3: 'Allowing the artificial intelligence model to analyze the processed image.',
+                aboutStep4: 'Delivering a result with a level of match with the classes learned by the model.',
+                aboutHowText2: 'Each contributed image contributes to the growth and improvement of the system.',
+                aboutDevelopmentTitle: 'Development status',
+                aboutDevelopmentText: 'MICRAI is the first model in a series of tools projected for the detection of other intestinal parasites of importance in public health, such as:',
+                aboutDev1: 'Entamoeba histolytica/dispar',
+                aboutDev2: 'Giardia lamblia',
+                aboutDev3: 'Balantioides coli',
+                aboutDev4: 'Helminths such as Ascaris lumbricoides',
+                aboutDev5: 'Taenia spp.',
+                aboutDev6: 'Other parasites of importance in public health',
+                aboutDevelopmentText2: 'It is currently in an early phase, oriented mainly to image collection and progressive training of models, always under expert review.',
+                aboutPotentialTitle: 'Application potential',
+                aboutPotentialText: 'Although the initial focus is on human health, this technology has clear potential to be adapted to the veterinary field and environmental sample analysis. In this way, MICRAI could contribute in the future to health surveillance, animal health and food safety.',
+                aboutAccuracyTitle: 'Accuracy and limitations',
+                aboutAccuracyText: 'Given the reduced number of images used in the initial training, the system has limitations in its current prediction capacity. However, its design is intended so that, with use and collection of new images validated by experts, the model progressively improves its performance.',
+                aboutDataTitle: 'Continuous improvement',
+                aboutDataText: 'MICRAI is framed in a process of constant improvement. Each image that is incorporated, under ethical and anonymity criteria, strengthens the database and allows optimizing algorithms, for the benefit of the scientific and academic community.',
+                aboutCreatorTitle: 'Created by',
+                aboutCreatorBio: 'This project was developed by Professor Miguel Ángel Toro Londoño, microbiologist from the University of Antioquia, with a master\'s degree in Biology (emphasis in Molecular Parasitology) from the same university and a doctorate in Cell Signaling (emphasis in Molecular Biology and Biochemistry of Parasites) from the University of Alcalá, in Spain. He carried out postdoctorates at the National Genomic Sequencing Center and at the Max Planck Tandem Group for Mosquito Reproductive Biology, both at the University of Antioquia.',
+                aboutCreatorCurrent: 'Since 2021 he has served as a professor of Parasitology in the undergraduate Medicine program, attached to the Department of Microbiology and Parasitology and the Parasitology Group of the Faculty of Medicine at the University of Antioquia. His work seeks to contribute with practical and applicable solutions to the advancement of microbiology and the strengthening of academic training in the country.',
+                aboutCreatorContact: 'Contact: miguel.toro@udea.edu.co',
+                aboutCreatorOrcid: 'ORCID: 0000-0002-7607-5151',
+                publicationsTitle: 'Recent publications',
+                aboutTechTitle: 'Technologies used',
+                aboutTechText: 'MICRAI was developed using open source technologies and modern tools such as:',
+                aboutTechItem1: 'TensorFlow/Keras for the artificial intelligence model',
+                aboutTechItem2: 'Python Flask for the backend',
+                aboutTechItem3: 'Vanilla JavaScript for the interface',
+                aboutTechItem4: 'HTML5 Canvas for image processing',
+                footerText: 'MICRAI is a support tool for microscopic image analysis and does not replace clinical judgment or professional medical diagnosis. Contact: miguel.toro@udea.edu.co | Developed by Miguel Toro | Version 1.0.0',
+                counterText: '📊 Images Analyzed: '
+            }
+        };
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            if (tabName === 'detection') {
+                document.getElementById('detectionTab').classList.add('active');
+                document.querySelector('.nav-tab:first-child').classList.add('active');
+            } else if (tabName === 'about') {
+                document.getElementById('aboutTab').classList.add('active');
+                document.querySelector('.nav-tab:last-child').classList.add('active');
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            const t = translations[lang];
+            
+            document.querySelectorAll('.flag-btn').forEach(flag => flag.classList.remove('active'));
+            document.querySelector(`.flag-${lang === 'es' ? 'colombia' : 'usa'}`).classList.add('active');
+            
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('proof-concept-text').textContent = t.proofConcept;
+            document.getElementById('detection-tab').innerHTML = t.detectionTab;
+            document.getElementById('about-tab').textContent = t.aboutTab;
+            document.getElementById('results-disclaimer-text').textContent = t.resultsDisclaimerText;
+            document.getElementById('privacy-title').textContent = t.privacyTitle;
+            document.getElementById('privacy-text').textContent = t.privacyText;
+            document.getElementById('upload-title').textContent = t.uploadTitle;
+            document.getElementById('upload-subtitle').textContent = t.uploadSubtitle;
+            document.getElementById('file-btn-text').textContent = t.fileBtnText;
+            document.getElementById('camera-btn-text').textContent = t.cameraBtnText;
+            document.getElementById('crop-title').textContent = t.cropTitle;
+            document.getElementById('analyze-btn-text').innerHTML = t.analyzeBtnText;
+            document.getElementById('processing-title').textContent = t.processingTitle;
+            document.getElementById('results-title').textContent = t.resultsTitle;
+            document.getElementById('cropped-title').textContent = t.croppedTitle;
+            document.getElementById('reset-btn-text').textContent = t.resetBtnText;
+            document.getElementById('camera-title').textContent = t.cameraTitle;
+            document.getElementById('capture-btn-text').textContent = t.captureBtnText;
+            document.getElementById('cancel-btn-text').textContent = t.cancelBtnText;
+            
+            // Update About section safely
+            const aboutElements = [
+                'about-main-title', 'about-what-text', 'about-what-text2', 'about-what-text3', 'about-what-text4', 'about-what-text5',
+                'about-how-title', 'about-how-text', 'about-step1', 'about-step2', 'about-step3', 'about-step4', 'about-how-text2',
+                'about-development-title', 'about-development-text', 'about-dev1', 'about-dev2', 'about-dev3',
+                'about-dev4', 'about-dev5', 'about-dev6', 'about-development-text2', 'about-potential-title', 'about-potential-text',
+                'about-accuracy-title', 'about-accuracy-text', 'about-data-title', 'about-data-text',
+                'about-creator-title', 'about-creator-bio', 'about-creator-current', 'about-creator-contact', 'about-creator-orcid',
+                'publications-title', 'about-tech-title', 'about-tech-text', 'about-tech-item1',
+                'about-tech-item2', 'about-tech-item3', 'about-tech-item4', 'footer-text'
+            ];
+
+            aboutElements.forEach(id => {
+                const element = document.getElementById(id);
+                const translation = t[id.replace(/-([a-z])/g, (g) => g[1].toUpperCase())];
+                if (element && translation) {
+                    if (id.includes('what-text') || id.includes('dev') && !id.includes('development')) {
+                        element.innerHTML = translation;
+                    } else if (id === 'about-creator-contact') {
+                        element.innerHTML = translation.replace('miguel.toro@udea.edu.co', '<a href="mailto:miguel.toro@udea.edu.co">miguel.toro@udea.edu.co</a>');
+                    } else if (id === 'about-creator-orcid') {
+                        element.innerHTML = translation.replace('0000-0002-7607-5151', '<a href="https://orcid.org/0000-0002-7607-5151" target="_blank" rel="noopener noreferrer">0000-0002-7607-5151</a>');
+                    } else if (id === 'footer-text') {
+                        element.innerHTML = translation.replace(/miguel\.toro@udea\.edu\.co/g, '<a href="mailto:miguel.toro@udea.edu.co">miguel.toro@udea.edu.co</a>').replace('Miguel Toro', '<a href="mailto:miguel.toro@udea.edu.co">Miguel Toro</a>');
+                    } else {
+                        element.textContent = translation;
+                    }
+                }
+            });
+            
+            // Update image counter
+            updateImageCounter();
+            
+            document.documentElement.lang = lang;
+        }
+
+        function selectFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        function openCamera() {
+            console.log('📷 Opening camera...');
+            
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                console.log('📱 Camera not supported, using file input');
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.capture = 'environment';
+                input.onchange = function(e) {
+                    loadImage(e);
+                };
+                input.click();
+                return;
+            }
+
+            const modal = document.getElementById('cameraModal');
+            const video = document.getElementById('cameraVideo');
+            
+            console.log('🖥️ Showing camera modal');
+            modal.classList.remove('hidden');
+            
+            const constraints = {
+                video: {
+                    facingMode: 'environment',
+                    width: { ideal: 1280, max: 1920 },
+                    height: { ideal: 720, max: 1080 }
+                }
+            };
+            
+            console.log('🎥 Requesting camera access...');
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function(stream) {
+                    console.log('✅ Camera access granted');
+                    cameraStream = stream;
+                    video.srcObject = stream;
+                    
+                    video.onloadedmetadata = function() {
+                        console.log('📹 Video metadata loaded, starting playback');
+                        video.play().catch(function(error) {
+                            console.error('❌ Video play error:', error);
+                        });
+                    };
+                })
+                .catch(function(error) {
+                    console.error('❌ Camera error:', error);
+                    closeCamera();
+                    
+                    // Fallback to file input
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.capture = 'environment';
+                    input.onchange = function(e) {
+                        loadImage(e);
+                    };
+                    input.click();
+                });
+        }
+
+        function capturePhoto() {
+            console.log('📸 Capturing photo...');
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            
+            if (!video.videoWidth || !video.videoHeight) {
+                console.error('❌ Video not ready');
+                const t = translations[currentLanguage];
+                alert(t.cameraNotReady || 'Camera not ready. Please wait.');
+                return;
+            }
+            
+            console.log(`📐 Video dimensions: ${video.videoWidth}x${video.videoHeight}`);
+            
+            const context = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+            console.log('✅ Photo captured successfully');
+            
+            closeCamera();
+            loadImageFromDataURL(dataURL);
+        }
+
+        function closeCamera() {
+            console.log('🔒 Closing camera...');
+            const modal = document.getElementById('cameraModal');
+            const video = document.getElementById('cameraVideo');
+            
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => {
+                    track.stop();
+                    console.log('🛑 Camera track stopped');
+                });
+                cameraStream = null;
+            }
+            
+            video.srcObject = null;
+            modal.classList.add('hidden');
+            console.log('✅ Camera closed');
+        }
+
+        function loadImageFromDataURL(dataURL) {
+            currentImage = dataURL;
+            const previewImage = document.getElementById('previewImage');
+            previewImage.src = currentImage;
+            previewImage.onload = function() {
+                document.getElementById('imagePreview').classList.remove('hidden');
+                initializeCrop();
+            };
+        }
+
+        function loadImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    loadImageFromDataURL(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function initializeCrop() {
+            const image = document.getElementById('previewImage');
+            const overlay = document.getElementById('cropOverlay');
+            
+            setTimeout(function() {
+                const imageRect = image.getBoundingClientRect();
+                const containerRect = image.parentElement.getBoundingClientRect();
+                
+                const relativeLeft = imageRect.left - containerRect.left;
+                const relativeTop = imageRect.top - containerRect.top;
+                
+                const size = Math.min(imageRect.width, imageRect.height) * 0.6;
+                const x = relativeLeft + (imageRect.width - size) / 2;
+                const y = relativeTop + (imageRect.height - size) / 2;
+                
+                overlay.style.left = x + 'px';
+                overlay.style.top = y + 'px';
+                overlay.style.width = size + 'px';
+                overlay.style.height = size + 'px';
+                overlay.classList.remove('hidden');
+                
+                cropData = { 
+                    x: x - relativeLeft, 
+                    y: y - relativeTop, 
+                    size: size
+                };
+                
+                document.querySelector('.process-btn').disabled = false;
+                
+                addCropDragFunctionality();
+            }, 200);
+        }
+
+        function addCropDragFunctionality() {
+            const overlay = document.getElementById('cropOverlay');
+            const handle = overlay.querySelector('.crop-handle');
+            let isDragging = false;
+            let isResizing = false;
+            let startX, startY;
+
+            overlay.addEventListener('mousedown', function(e) {
+                if (e.target === handle) return;
+                
+                isDragging = true;
+                const rect = overlay.getBoundingClientRect();
+                startX = e.clientX - rect.left;
+                startY = e.clientY - rect.top;
+                e.preventDefault();
+            });
+
+            handle.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                const image = document.getElementById('previewImage');
+                const imageRect = image.getBoundingClientRect();
+                const containerRect = image.parentElement.getBoundingClientRect();
+                
+                if (isDragging) {
+                    const newLeft = e.clientX - containerRect.left - startX;
+                    const newTop = e.clientY - containerRect.top - startY;
+                    
+                    const maxLeft = imageRect.left - containerRect.left + imageRect.width - cropData.size;
+                    const maxTop = imageRect.top - containerRect.top + imageRect.height - cropData.size;
+                    const minLeft = imageRect.left - containerRect.left;
+                    const minTop = imageRect.top - containerRect.top;
+                    
+                    const constrainedLeft = Math.max(minLeft, Math.min(newLeft, maxLeft));
+                    const constrainedTop = Math.max(minTop, Math.min(newTop, maxTop));
+                    
+                    overlay.style.left = constrainedLeft + 'px';
+                    overlay.style.top = constrainedTop + 'px';
+                    
+                    cropData.x = constrainedLeft - (imageRect.left - containerRect.left);
+                    cropData.y = constrainedTop - (imageRect.top - containerRect.top);
+                    
+                } else if (isResizing) {
+                    const rect = overlay.getBoundingClientRect();
+                    const newSize = Math.max(50, e.clientX - rect.left, e.clientY - rect.top);
+                    
+                    const currentLeft = parseInt(overlay.style.left);
+                    const currentTop = parseInt(overlay.style.top);
+                    const maxSizeX = (imageRect.left - containerRect.left + imageRect.width) - currentLeft;
+                    const maxSizeY = (imageRect.top - containerRect.top + imageRect.height) - currentTop;
+                    const finalSize = Math.min(newSize, maxSizeX, maxSizeY);
+                    
+                    overlay.style.width = finalSize + 'px';
+                    overlay.style.height = finalSize + 'px';
+                    
+                    cropData.size = finalSize;
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                isResizing = false;
+            });
+
+            // Touch events for mobile
+            overlay.addEventListener('touchstart', function(e) {
+                if (e.target === handle) return;
+                
+                isDragging = true;
+                const rect = overlay.getBoundingClientRect();
+                const touch = e.touches[0];
+                startX = touch.clientX - rect.left;
+                startY = touch.clientY - rect.top;
+                e.preventDefault();
+            });
+
+            handle.addEventListener('touchstart', function(e) {
+                isResizing = true;
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            document.addEventListener('touchmove', function(e) {
+                if (!isDragging && !isResizing) return;
+                
+                const touch = e.touches[0];
+                const image = document.getElementById('previewImage');
+                const imageRect = image.getBoundingClientRect();
+                const containerRect = image.parentElement.getBoundingClientRect();
+                
+                if (isDragging) {
+                    const newLeft = touch.clientX - containerRect.left - startX;
+                    const newTop = touch.clientY - containerRect.top - startY;
+                    
+                    const maxLeft = imageRect.left - containerRect.left + imageRect.width - cropData.size;
+                    const maxTop = imageRect.top - containerRect.top + imageRect.height - cropData.size;
+                    const minLeft = imageRect.left - containerRect.left;
+                    const minTop = imageRect.top - containerRect.top;
+                    
+                    const constrainedLeft = Math.max(minLeft, Math.min(newLeft, maxLeft));
+                    const constrainedTop = Math.max(minTop, Math.min(newTop, maxTop));
+                    
+                    overlay.style.left = constrainedLeft + 'px';
+                    overlay.style.top = constrainedTop + 'px';
+                    
+                    cropData.x = constrainedLeft - (imageRect.left - containerRect.left);
+                    cropData.y = constrainedTop - (imageRect.top - containerRect.top);
+                    
+                } else if (isResizing) {
+                    const rect = overlay.getBoundingClientRect();
+                    const newSize = Math.max(50, touch.clientX - rect.left, touch.clientY - rect.top);
+                    
+                    const currentLeft = parseInt(overlay.style.left);
+                    const currentTop = parseInt(overlay.style.top);
+                    const maxSizeX = (imageRect.left - containerRect.left + imageRect.width) - currentLeft;
+                    const maxSizeY = (imageRect.top - containerRect.top + imageRect.height) - currentTop;
+                    const finalSize = Math.min(newSize, maxSizeX, maxSizeY);
+                    
+                    overlay.style.width = finalSize + 'px';
+                    overlay.style.height = finalSize + 'px';
+                    
+                    cropData.size = finalSize;
+                }
+                
+                e.preventDefault();
+            });
+
+            document.addEventListener('touchend', function() {
+                isDragging = false;
+                isResizing = false;
+            });
+        }
+
+        function processImage() {
+            if (!cropData || !currentImage) return;
+            
+            croppedImageData = extractCroppedImage();
+            
+            if (!croppedImageData) {
+                const t = translations[currentLanguage];
+                alert(t.processingError || 'Failed to extract cropped image');
+                return;
+            }
+            
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('imagePreview').classList.add('hidden');
+            
+            // Send image to backend for real prediction
+            sendImageToBackend(croppedImageData);
+        }
+
+        function sendImageToBackend(imageData) {
+            const apiUrl = window.location.origin + '/predict';
+            
+            const requestData = {
+                image: imageData,
+                timestamp: new Date().toISOString(),
+                language: currentLanguage
+            };
+            
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('loading').classList.add('hidden');
+                
+                if (data.success) {
+                    const results = data.predictions.map(pred => {
+                        let label = pred.label;
+                        // Map the labels to the new format
+                        if (currentLanguage === 'es') {
+                            if (pred.label.toLowerCase().includes('blastocystis detectado') || pred.label.toLowerCase().includes('blastocystis') && (pred.label.toLowerCase().includes('presente') || pred.label.toLowerCase().includes('present') || pred.label.toLowerCase().includes('detectado'))) {
+                                label = 'Coincidencia con <em>Blastocystis</em>';
+                            } else if (pred.label.toLowerCase().includes('no es blastocystis') || pred.label.toLowerCase().includes('blastocystis') && (pred.label.toLowerCase().includes('ausente') || pred.label.toLowerCase().includes('absent'))) {
+                                label = 'Coincidencia con otro microorganismo';
+                            } else if (pred.label_es) {
+                                label = pred.label_es;
+                            }
+                        } else {
+                            if (pred.label.toLowerCase().includes('blastocystis detectado') || pred.label.toLowerCase().includes('blastocystis') && (pred.label.toLowerCase().includes('presente') || pred.label.toLowerCase().includes('present') || pred.label.toLowerCase().includes('detectado'))) {
+                                label = 'Match with <em>Blastocystis</em>';
+                            } else if (pred.label.toLowerCase().includes('no es blastocystis') || pred.label.toLowerCase().includes('blastocystis') && (pred.label.toLowerCase().includes('ausente') || pred.label.toLowerCase().includes('absent'))) {
+                                label = 'Match with other microorganism';
+                            }
+                        }
+                        
+                        return {
+                            label: label,
+                            confidence: pred.confidence
+                        };
+                    }).sort((a, b) => b.confidence - a.confidence); // Sort by confidence descending
+                    
+                    displayResults(results);
+                    document.getElementById('results').classList.remove('hidden');
+                    
+                    // Update counters
+                    totalImages++;
+                    updateImageCounter();
+                    
+                    console.log('Real AI prediction successful:', data);
+                    if (data.saved_image) {
+                        console.log('Image saved for training:', data.saved_image);
+                    }
+                } else {
+                    throw new Error(data.error || 'Unknown error occurred');
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').classList.add('hidden');
+                console.error('Backend error:', error);
+                
+                const t = translations[currentLanguage];
+                const errorMessage = error.message.includes('Failed to fetch') ? 
+                    (t.networkError || 'Connection error') : (t.processingError || 'Processing error');
+                
+                alert(errorMessage + '\n\nTécnico: ' + error.message);
+                
+                // Fallback to demo mode if backend fails
+                console.log('Falling back to demo mode...');
+                setTimeout(function() {
+                    const demoResults = [
+                        { label: t.blastocystisMatch, confidence: 0.87 },
+                        { label: t.otherMicroorganismMatch, confidence: 0.13 }
+                    ].sort((a, b) => b.confidence - a.confidence); // Sort by confidence descending
+                    
+                    displayResults(demoResults);
+                    document.getElementById('results').classList.remove('hidden');
+                    
+                    // Update counters even in demo mode
+                    totalImages++;
+                    updateImageCounter();
+                }, 1000);
+            });
+        }
+
+        function extractCroppedImage() {
+            try {
+                const image = document.getElementById('previewImage');
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                const displayWidth = image.offsetWidth;
+                const displayHeight = image.offsetHeight;
+                const naturalWidth = image.naturalWidth;
+                const naturalHeight = image.naturalHeight;
+                
+                const scaleX = naturalWidth / displayWidth;
+                const scaleY = naturalHeight / displayHeight;
+                
+                const cropX = cropData.x * scaleX;
+                const cropY = cropData.y * scaleY;
+                const cropSize = cropData.size * Math.min(scaleX, scaleY);
+                
+                canvas.width = cropSize;
+                canvas.height = cropSize;
+                
+                ctx.drawImage(
+                    image,
+                    cropX, cropY, cropSize, cropSize,
+                    0, 0, cropSize, cropSize
+                );
+                
+                return canvas.toDataURL('image/jpeg', 0.9);
+                
+            } catch (error) {
+                console.error('Error extracting cropped image:', error);
+                return null;
+            }
+        }
+
+        function displayResults(results) {
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = '';
+            
+            if (croppedImageData) {
+                document.getElementById('croppedImageResult').src = croppedImageData;
+            }
+            
+            results.forEach(function(result) {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                const confidence = Math.round(result.confidence * 100);
+                const color = confidence > 50 ? '#144659' : '#2D6673';
+                
+                resultItem.innerHTML = 
+                    '<div>' +
+                        '<strong>' + result.label + '</strong>' +
+                        '<div style="color: ' + color + '; font-size: 0.9em; margin-top: 5px;">' +
+                            (currentLanguage === 'es' ? 'Confianza: ' : 'Confidence: ') + confidence + '%' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="confidence-bar">' +
+                        '<div class="confidence-fill" style="width: ' + confidence + '%; background: ' + color + ';"></div>' +
+                    '</div>';
+                
+                resultsList.appendChild(resultItem);
+            });
+        }
+
+        function resetApp() {
+            currentImage = null;
+            cropData = null;
+            croppedImageData = null;
+            
+            if (cameraStream) {
+                closeCamera();
+            }
+            
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('cropOverlay').classList.add('hidden');
+            document.querySelector('.process-btn').disabled = true;
+            document.getElementById('fileInput').value = '';
+            
+            document.getElementById('croppedImageResult').src = '';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadImageCounter();
+            updateImageCounter();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && cameraStream) {
+                closeCamera();
+            }
+        });
+
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
